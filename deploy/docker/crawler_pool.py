@@ -27,10 +27,12 @@ def _sig(cfg: BrowserConfig, crawler_strategy: Optional[object]  = None) -> str:
         payload["strategy"] = crawler_strategy.__class__.__name__
 
     json_payload = json.dumps(payload, sort_keys=True, separators=(",", ":"))
-    return hashlib.sha1(json_payload.encode()).hexdigest()
+    return hashlib.sha256(json_payload.encode()).hexdigest()
+
 
 
 async def get_crawler(cfg: BrowserConfig, crawler_strategy: Optional[object] = None) -> AsyncWebCrawler:
+    sig: Optional[str] = None
     try:
         sig = _sig(cfg, crawler_strategy=crawler_strategy)
         async with LOCK:
@@ -48,12 +50,13 @@ async def get_crawler(cfg: BrowserConfig, crawler_strategy: Optional[object] = N
     except Exception as e:
         raise RuntimeError(f"Failed to start browser: {e}")
     finally:
-        if sig in POOL:
+        if sig and sig in POOL:
             LAST_USED[sig] = time.time()
         else:
             # If we failed to start the browser, we should remove it from the pool
-            POOL.pop(sig, None)
-            LAST_USED.pop(sig, None)
+            if sig:
+                POOL.pop(sig, None)
+                LAST_USED.pop(sig, None)
         # If we failed to start the browser, we should remove it from the pool
         
 async def close_all():

@@ -18,10 +18,8 @@ load_dotenv()  # Load environment variables from .env file
 console = Console()
 
 # --- Configuration ---
-BASE_URL = os.getenv("CRAWL4AI_TEST_URL", "http://localhost:8020")
 BASE_URL = os.getenv("CRAWL4AI_TEST_URL", "http://localhost:11235")
 # Target URLs
-SIMPLE_URL = "https://example.com"  # For demo purposes
 SIMPLE_URL = "https://httpbin.org/html"
 LINKS_URL = "https://httpbin.org/links/10/0"
 FORMS_URL = "https://httpbin.org/forms/post"  # For JS demo
@@ -1267,6 +1265,7 @@ async def demo_config_dump_invalid(client: httpx.AsyncClient):
 async def demo_pdf_crawl(client: httpx.AsyncClient):
     payload = {
         "urls": [PDF_URL],
+        "browser_config": {"type": "BrowserConfig", "params": {"headless": True}},
         "crawler_config": {
             "type": "CrawlerRunConfig",
             "params": {
@@ -1303,6 +1302,7 @@ async def demo_pdf_crawl_stream(client: httpx.AsyncClient):
     """
     payload = {
         "urls": [PDF_URL],
+        "browser_config": {"type": "BrowserConfig", "params": {"headless": True}},
         "crawler_config": {
             "type": "CrawlerRunConfig",
             "params": {
