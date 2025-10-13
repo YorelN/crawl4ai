@@ -37,7 +37,6 @@ from crawl4ai.content_filter_strategy import (
 )
 
 from crawl4ai.processors.pdf import PDFCrawlerStrategy, PDFContentScrapingStrategy
-# from crawl4ai.async_configs import to_serializable_dict
 
 from crawl4ai.markdown_generation_strategy import DefaultMarkdownGenerator
 from crawl4ai.content_scraping_strategy import LXMLWebScrapingStrategy
